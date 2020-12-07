@@ -3,7 +3,55 @@ use std::collections::HashMap;
 use regex::Regex;
 
 pub fn main() {
-    let contents = std::fs::read_to_string("day7").unwrap().lines().map(ToString::to_string).collect::<Vec<_>>();
+    let contents = std::fs::read_to_string("inputs/day7").unwrap().lines().map(ToString::to_string).collect::<Vec<_>>();
+    part1(&contents);
+    part2(&contents);
+}
+
+fn part1(contents: &Vec<String>) {
+    let mut graph = DiGraphMap::new();
+    // Mapping of bag name to graph id, needed because the node types must impl Copy, and trying to get &str lifetimes functional here would be a nightmare
+    let mut names: HashMap<String, usize> = HashMap::new();
+    // Rolling count of next node id
+    let mut node = 1;
+
+    // depluralify bags to normalize their names
+    let re = Regex::new("s$").unwrap();
+    for line in contents {
+        let mut line = line.split(" contain ");
+        let this_node = line.next().unwrap();
+        let this_node = *names.entry(re.replace(this_node, "").to_string())
+            .or_insert_with(|| {
+                let x = node;
+                node += 1;
+                x
+            });
+        let connections = line.next().unwrap().split(", ").map(|s| &s[2..])
+            .map(|s| {
+                // normalize with no periods and in the singular
+                re.replace(&s.replace(".", ""), "").to_string()
+            })
+            // Find existing node id or create one with running id
+            .map(|s| *names.entry(s).or_insert_with(|| {
+                let x = node;
+                node += 1;
+                x
+            }))
+            .collect::<Vec<_>>();
+
+        for con in connections {
+            // con -> this_node matters because it's building a DAG.
+            // outgoing nodes (a->b) imply that b can contain a, needed to properly traverse the graph for part 1
+            graph.add_edge(con, this_node, 1);
+        }
+    }
+
+    let id = *names.get("shiny gold bag").unwrap();
+    println!("{}", traverse_graph_part1(id, &graph, &mut vec![]).len());
+}
+
+fn part2(contents: &Vec<String>) {
+
     let mut graph = DiGraphMap::new();
     // Mapping of bag name to graph id, needed because the node types must impl Copy, and trying to get &str lifetimes functional here would be a nightmare
     let mut names: HashMap<String, usize> = HashMap::new();

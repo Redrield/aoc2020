@@ -42,7 +42,7 @@ fn is_valid2(ck: &PasswordCheck) -> bool {
 }
 
 pub fn main() {
-    let contents = std::fs::read_to_string("day2").unwrap()
+    let contents = std::fs::read_to_string("inputs/day2").unwrap()
         .lines()
         .map(|s| {
             let mut ws = s.split_whitespace();

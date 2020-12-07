@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 pub fn main() {
-    let contents = std::fs::read_to_string("day5").unwrap().lines().map(ToString::to_string).collect::<Vec<String>>();
+    let contents = std::fs::read_to_string("inputs/day5").unwrap().lines().map(ToString::to_string).collect::<Vec<String>>();
 
     part1(&contents);
     part2(&contents);

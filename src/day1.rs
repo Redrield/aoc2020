@@ -2,7 +2,7 @@ use rayon::prelude::*;
 use itertools::iproduct;
 
 pub fn main() {
-    let contents = std::fs::read_to_string("day1").unwrap()
+    let contents = std::fs::read_to_string("inputs/day1").unwrap()
         .lines()
         .map(|s| s.parse::<u64>().unwrap())
         .collect::<Vec<u64>>();
