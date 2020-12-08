@@ -1,6 +1,7 @@
 use petgraph::graphmap::DiGraphMap;
 use std::collections::HashMap;
 use regex::Regex;
+use petgraph::dot::Dot;
 
 pub fn main() {
     let contents = std::fs::read_to_string("inputs/day7").unwrap().lines().map(ToString::to_string).collect::<Vec<_>>();
