@@ -76,6 +76,7 @@ impl Insn {
 pub fn main() {
     let contents = std::fs::read_to_string("inputs/day8").unwrap().lines().map(ToString::to_string).collect::<Vec<_>>();
 
+    part1(&contents);
     part2(&contents);
 }
 
@@ -104,7 +105,6 @@ fn part2(contents: &Vec<String>) {
 
     loop {
         if seen.contains(&vm.pc) {
-            println!("loop detected");
             // Find the first instruction that isn't currently swapped, and doesn't have the sticky flag set
             // Sticky flag exists to prevent loops where the first nop/jmp in the input is swapped continuously
             let (i, (swap_insn, _, swapped, _)) = vm.code.iter_mut().enumerate().find(|(_, (insn, _, sw, sticky))| insn.can_be_swapped() && !*sw && !*sticky).unwrap();
@@ -119,7 +119,6 @@ fn part2(contents: &Vec<String>) {
             if let Some((j, (insn, _, sw, sticky))) = vm.code.iter_mut().enumerate().find(|(_, (_, _, sw, _))| *sw) {
                 // Swap if the indices dont match
                 if i != j {
-                    println!("Unswapping old code at index {}", j);
                     if *insn == Insn::Nop {
                         *insn = Insn::Jmp;
                     } else {
